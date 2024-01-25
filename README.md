@@ -8,4 +8,4 @@ azure-iot-sdk-nodeをベースに一部カスタムを行ったSDKパッケー�
 お気づきの点があれば、ぜひIssueにてお知らせください。
 
 ## LICENSE
-This project is licensed under the MIT License, see the LICENSE file for details
+This project is licensed under the MIT License, see the LICENSE file for details.
