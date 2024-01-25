@@ -1,0 +1,47 @@
+{
+  "name": "device-samples-typescript",
+  "version": "0.0.1",
+  "private": true,
+  "main": "simple_sample_device.ts",
+  "author": "Microsoft Corp.",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^3.2.3",
+    "es5-ext": "0.10.53",
+    "@azure/storage-blob": "^12.8.0",
+    "azure-iot-common": "1.13.2",
+    "azure-iot-device": "1.18.2",
+    "azure-iot-device-amqp": "1.14.2",
+    "azure-iot-device-http": "1.14.2",
+    "azure-iot-device-mqtt": "1.16.2",
+    "azure-iot-provisioning-device": "1.9.1",
+    "azure-iot-provisioning-device-mqtt": "1.8.1",
+    "azure-iot-security-symmetric-key": "1.8.2",
+    "https-proxy-agent": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/async": "^3.2.8",
+    "@types/node": "^16.10.2",
+    "@types/ws": "^7.4.7",
+    "encoding": "^0.1.13",
+    "source-map-support": "^0.5.16",
+    "eslint": "^8.26.0",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint-plugin-jsdoc": "^39.3.25",
+    "eslint-plugin-mocha": "^10.1.0",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-no-only-tests": "^3.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-security": "^1.5.0",
+    "typescript": "4.4.4"
+  },
+  "scripts": {
+    "prebuild": "npm run lint",
+    "build": "tsc -p .",
+    "lint": "eslint ./ --ext .ts -f visualstudio",
+    "ci": "npm -s run lint && npm -s run build",
+    "clean": "tsc --build --clean"
+  }
+}

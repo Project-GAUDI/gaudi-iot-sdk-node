@@ -1,0 +1,48 @@
+{
+  "name": "ts-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src --ext .ts -f visualstudio",
+    "build": "tsc",
+    "test": "../node_modules/mocha/bin/_mocha --reporter dot \"./dist/**/*.tests.js\""
+  },
+  "keywords": [],
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^3.2.3",
+    "es5-ext": "0.10.53",
+    "@azure/event-hubs": "^1.0.8",
+    "@types/chai": "^3.5.1",
+    "@types/debug": "^4.1.5",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^16.10.2",
+    "@types/uuid": "^3.4.5",
+    "azure-iot-common": "1.13.2",
+    "azure-iot-device": "1.18.2",
+    "azure-iot-device-amqp": "1.14.2",
+    "azure-iot-device-http": "1.14.2",
+    "azure-iot-device-mqtt": "1.16.2",
+    "azure-iothub": "1.15.1",
+    "debug": "^4.3.1",
+    "typescript": "4.4.4",
+    "uuid": "^8.3.2",
+    "uuid-buffer": "^1.0.3"
+  },
+  "devDependencies": {
+    "chai": "^4.3.3",
+    "mocha": "^9.2.1",
+    "eslint": "^8.26.0",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint-plugin-jsdoc": "^39.3.25",
+    "eslint-plugin-mocha": "^10.1.0",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-no-only-tests": "^3.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-security": "^1.5.0"
+  }
+}
