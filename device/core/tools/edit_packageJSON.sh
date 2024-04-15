@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name="gaudi-iot-device"
+name="@project-gaudi/gaudi-iot-device"
 version={$VERSION}
 description="Based on Azure IoT device SDK v1.18.2"
 

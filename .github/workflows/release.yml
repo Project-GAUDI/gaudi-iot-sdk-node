@@ -17,6 +17,7 @@ jobs:
 
     - name: Run edgit_packageJSON.sh
       run: ./device/core/tools/edit_packageJSON.sh
+      env: VERSION: ${{ inputs.release-version }}
 
     - name: Set Node.js version
       uses: actions/setup-node@v4
@@ -24,15 +25,21 @@ jobs:
         node-version: '20'
         registry-url: 'https://npm.pkg.github.com/'
     
-    - name: install dependencies
-      run: npm ci
+    - name: Install Dependencies
+      run: |
+        npm install --global node-gyp
+        npm install --global lerna@^6.6.2
+
+    - name: Bootstrap & Build
+      run: |
+        lerna bootstrap --hoist --scope gaudi-iot-device
+        lerna run build --scope gaudi-iot-device
 
     - name: Publish to GitHub Packages
       run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-    # タグ付け
+
     - name: Create tag
       run: |
         git tag Release/${{ inputs.release-version }}
