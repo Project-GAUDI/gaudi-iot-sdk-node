@@ -31,10 +31,11 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
 
-    - name: Bootstrap & Build
-      run: |
-        lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
-        lerna run build --scope @project-gaudi/gaudi-iot-device
+    - name: Bootstrap
+      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
+      
+    - name: Build
+      run: lerna run build --scope @project-gaudi/gaudi-iot-device
 
     - name: Publish to GitHub Packages
       run: npm publish
