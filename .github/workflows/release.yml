@@ -27,9 +27,7 @@ jobs:
         registry-url: 'https://npm.pkg.github.com/'
     
     - name: Install Dependencies
-      run: |
-        npm install --global node-gyp
-        npm install --global lerna@^6.6.2
+      run: npm install
 
     - name: Bootstrap
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
