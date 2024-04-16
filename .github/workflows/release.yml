@@ -28,9 +28,6 @@ jobs:
     
     - name: Install Dependencies
       run: npm install
-
-    - name: Bootstrap
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
       
     - name: Build
       run: lerna run build --scope @project-gaudi/gaudi-iot-device
