@@ -7,8 +7,8 @@ import { EventEmitter } from 'events';
 import machina = require('machina');
 
 import { errors, endpoint, AuthenticationProvider } from 'azure-iot-common';
-import { Amqp as BaseAmqpClient, AmqpMessage, SenderLink, ReceiverLink, AmqpTransportError, getErrorName } from 'azure-iot-amqp-base';
-import { TwinProperties } from 'azure-iot-device';
+import { Amqp as BaseAmqpClient, AmqpMessage, SenderLink, ReceiverLink, AmqpTransportError, getErrorName } from 'gaudi-iot-amqp-base';
+import { TwinProperties } from 'gaudi-iot-device';
 
 import * as uuid from 'uuid';
 import * as dbg from 'debug';

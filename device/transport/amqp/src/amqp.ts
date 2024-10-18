@@ -9,13 +9,13 @@ const debug = dbg('azure-iot-device-amqp:Amqp');
 const debugErrors = dbg('azure-iot-device-amqp:Amqp:Errors');
 import { EventEmitter } from 'events';
 
-import { DeviceTransport, MethodMessage, DeviceMethodResponse, TwinProperties, DeviceClientOptions, SharedAccessKeyAuthenticationProvider } from 'azure-iot-device';
-import { getUserAgentString } from 'azure-iot-device';
-import { Amqp as BaseAmqpClient, AmqpBaseTransportConfig, getErrorName, translateError, AmqpMessage, SenderLink, ReceiverLink } from 'azure-iot-amqp-base';
+import { DeviceTransport, MethodMessage, DeviceMethodResponse, TwinProperties, DeviceClientOptions, SharedAccessKeyAuthenticationProvider } from 'gaudi-iot-device';
+import { getUserAgentString } from 'gaudi-iot-device';
+import { Amqp as BaseAmqpClient, AmqpBaseTransportConfig, getErrorName, translateError, AmqpMessage, SenderLink, ReceiverLink } from 'gaudi-iot-amqp-base';
 import { endpoint, SharedAccessSignature, errors, results, Message, AuthenticationProvider, AuthenticationType, TransportConfig } from 'azure-iot-common';
 import { AmqpDeviceMethodClient } from './amqp_device_method_client';
 import { AmqpTwinClient } from './amqp_twin_client';
-import { X509AuthenticationProvider, SharedAccessSignatureAuthenticationProvider } from 'azure-iot-device';
+import { X509AuthenticationProvider, SharedAccessSignatureAuthenticationProvider } from 'gaudi-iot-device';
 
 const handleResult = function (errorMessage: string, done: (err?: Error, result?: any) => void): (err?: Error, result?: any) => void {
   return function (err?: Error, result?: any): void {
