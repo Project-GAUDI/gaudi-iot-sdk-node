@@ -1,11 +1,8 @@
 name: Publish Node.js Package
 
 on:
-  workflow_dispatch:
-    inputs:
-      release-version:
-        description: 'Release Version'
-        required: true
+  release:
+    types: [published]
 
 jobs:
   build-and-publish:
@@ -31,7 +28,7 @@ jobs:
       env: 
         NAME: ${{ matrix.buildTarget.name }}
         PATH: "${{ matrix.buildTarget.path }}package.json"
-        VERSION: ${{ inputs.release-version }}
+        VERSION: ${{ github.event.release.tag_name }}
 
     - name: Set Node.js version
       uses: actions/setup-node@v4
