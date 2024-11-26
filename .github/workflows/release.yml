@@ -30,8 +30,8 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: ${{ matrix.buildTarget.name }}
-        PATH: "${{ matrix.buildTarget.path }}package.json"
         VERSION: ${{ github.event.release.tag_name }}
+        TARGET: ${{ matrix.buildTarget.path }}package.json
 
     - name: Set Node.js version
       uses: actions/setup-node@v4
