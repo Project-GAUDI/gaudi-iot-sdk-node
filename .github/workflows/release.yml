@@ -27,7 +27,7 @@ jobs:
       run: chmod +x ./scripts/edit_packageJSON.sh
 
     - name: Run edit_packageJSON.sh ({{ matrix.buildTarget.name }})
-      run: sh ./scripts/edit_packageJSON.sh
+      run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: ${{ matrix.buildTarget.name }}
         PATH: "${{ matrix.buildTarget.path }}package.json"
