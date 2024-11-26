@@ -9,15 +9,28 @@ on:
 
 jobs:
   build-and-publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    
+    strategy:
+      matrix:
+        buildTarget:
+          - name: gaudi-iot-device
+            path: device/core/
+          - name: gaudi-iot-amqp-base
+            path: common/transport/amqp/
+          - name: gaudi-iot-device-amqp
+            path: device/transport/amqp/
+
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
-    - name: Run edgit_packageJSON.sh
-      run: ./device/core/tools/edit_packageJSON.sh
+    
+    - name: Run edit_packageJSON.sh ({{ matrix.buildTarget.name }})
+      run: ./scripts/edit_packageJSON.sh
       env: 
+        NAME: ${{ matrix.buildTarget.name }}
+        PATH: "${{ matrix.buildTarget.path }}package.json"
         VERSION: ${{ inputs.release-version }}
 
     - name: Set Node.js version
@@ -29,15 +42,11 @@ jobs:
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
-        npm install --global lerna@^6.6.2
-
-    - name: Bootstrap
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
       
-    - name: Build
-      run: lerna run build --scope @project-gaudi/gaudi-iot-device
+    - name: Bootstrap & Build ({{ matrix.buildTarget.name }})
+      run: lerna run build --scope {{ matrix.buildTarget.name }}
 
-    - name: Publish to GitHub Packages
-      run: npm publish
+    - name: Publish to GitHub Packages ({{ matrix.buildTarget.name }})
+      run: npm publish {{ matrix.buildTarget.path }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
