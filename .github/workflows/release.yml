@@ -42,6 +42,7 @@ jobs:
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
+        npm install --global lerna@^6.6.2
       
     - name: Bootstrap & Build ({{ matrix.buildTarget.name }})
       run: lerna run build --scope {{ matrix.buildTarget.name }}
