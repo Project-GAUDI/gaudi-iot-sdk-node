@@ -26,7 +26,7 @@ jobs:
     - name: Grant execute permission to edit_packageJSON.sh
       run: chmod +x ./scripts/edit_packageJSON.sh
 
-    - name: Run edit_packageJSON.sh ({{ matrix.buildTarget.name }})
+    - name: Run edit_packageJSON.sh (${{ matrix.buildTarget.name }})
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: ${{ matrix.buildTarget.name }}
@@ -44,10 +44,10 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
       
-    - name: Bootstrap & Build ({{ matrix.buildTarget.name }})
-      run: lerna run build --scope {{ matrix.buildTarget.name }}
+    - name: Bootstrap & Build (${{ matrix.buildTarget.name }})
+      run: lerna run build --scope ${{ matrix.buildTarget.name }}
 
-    - name: Publish to GitHub Packages ({{ matrix.buildTarget.name }})
-      run: npm publish {{ matrix.buildTarget.path }}
+    - name: Publish to GitHub Packages (${{ matrix.buildTarget.name }})
+      run: npm publish ${{ matrix.buildTarget.path }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
