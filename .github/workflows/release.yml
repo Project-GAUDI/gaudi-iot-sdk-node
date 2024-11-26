@@ -22,10 +22,12 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    - name: Install required packages
+      run: sudo apt update && sudo apt install -y grep sed
 
     - name: Grant execute permission to edit_packageJSON.sh
       run: chmod +x ./scripts/edit_packageJSON.sh
-      
+
     - name: Run edit_packageJSON.sh ({{ matrix.buildTarget.name }})
       run: ./scripts/edit_packageJSON.sh
       env: 
