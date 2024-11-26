@@ -4,6 +4,7 @@ name="@project-gaudi/${NAME}"
 version=${VERSION}
 author="Toyota Industries Corporation"
 url="https://github.com/Project-GAUDI/gaudi-iot-device"
+target=${PATH}
 
 # 元バージョン抜き出し
 baseVersion=`grep "version" ${target} | sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/g'`

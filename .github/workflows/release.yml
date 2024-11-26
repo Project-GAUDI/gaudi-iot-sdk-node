@@ -12,11 +12,11 @@ jobs:
       matrix:
         buildTarget:
           - name: gaudi-iot-device
-            path: device/core/
+            path: ./device/core/
           - name: gaudi-iot-amqp-base
-            path: common/transport/amqp/
+            path: ./common/transport/amqp/
           - name: gaudi-iot-device-amqp
-            path: device/transport/amqp/
+            path: ./device/transport/amqp/
 
     steps:
     - uses: actions/checkout@v4
@@ -27,9 +27,7 @@ jobs:
       run: chmod +x ./scripts/edit_packageJSON.sh
 
     - name: Run edit_packageJSON.sh ({{ matrix.buildTarget.name }})
-      run: |
-        export PATH="/usr/bin:/bin:$PATH"
-        ./scripts/edit_packageJSON.sh
+      run: sh ./scripts/edit_packageJSON.sh
       env: 
         NAME: ${{ matrix.buildTarget.name }}
         PATH: "${{ matrix.buildTarget.path }}package.json"
