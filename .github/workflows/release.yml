@@ -118,6 +118,9 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
       
+    - name: Set up .npmrc
+      run: cat .npmrc >> ./device/transport/amqp/.npmrc
+
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
       env:
