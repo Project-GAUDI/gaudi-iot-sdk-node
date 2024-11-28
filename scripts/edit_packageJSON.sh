@@ -1,6 +1,5 @@
 #!/bin/bash
-
-name="@project-gaudi/${NAME}"
+name="@project-gaudi\/${NAME}"
 version=${VERSION}
 author="Toyota Industries Corporation"
 url="https://github.com/Project-GAUDI/gaudi-iot-device"
