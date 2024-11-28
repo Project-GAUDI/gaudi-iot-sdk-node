@@ -44,10 +44,14 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
       
-    - name: Bootstrap & Build (${{ matrix.buildTarget.name }})
-      run: lerna run build --scope @project-gaudi/${{ matrix.buildTarget.name }}
+    - name: Bootstrap (${{ matrix.buildTarget.name }})
+      run: lerna bootstrap --hoist --scope @project-gaudi/${{ matrix.buildTarget.name }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build (${{ matrix.buildTarget.name }})
+      run: 
+        lerna run build --scope @project-gaudi/${{ matrix.buildTarget.name }}
 
     - name: Publish to GitHub Packages (${{ matrix.buildTarget.name }})
       run: npm publish ${{ matrix.buildTarget.path }}
