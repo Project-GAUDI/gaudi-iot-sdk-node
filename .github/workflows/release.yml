@@ -3,20 +3,9 @@ name: Publish Node.js Package
 on:
   release:
     types: [published]
-
 jobs:
-  build-and-publish:
+  build-and-publish-gaudi-iot-device:
     runs-on: ubuntu-22.04
-    
-    strategy:
-      matrix:
-        buildTarget:
-          - name: gaudi-iot-device
-            path: ./device/core/
-          - name: gaudi-iot-amqp-base
-            path: ./common/transport/amqp/
-          - name: gaudi-iot-device-amqp
-            path: ./device/transport/amqp/
 
     steps:
     - uses: actions/checkout@v4
@@ -26,12 +15,54 @@ jobs:
     - name: Grant execute permission to edit_packageJSON.sh
       run: chmod +x ./scripts/edit_packageJSON.sh
 
-    - name: Run edit_packageJSON.sh (${{ matrix.buildTarget.name }})
+    - name: Run edit_packageJSON.sh (gaudi-iot-device)
       run: ./scripts/edit_packageJSON.sh
       env: 
-        NAME: ${{ matrix.buildTarget.name }}
+        NAME: gaudi-iot-device
         VERSION: ${{ github.event.release.tag_name }}
-        TARGET: ${{ matrix.buildTarget.path }}package.json
+        TARGET: ./device/core/package.json
+
+    - name: Set Node.js version
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        registry-url: 'https://npm.pkg.github.com/'
+    
+    - name: Install Dependencies
+      run: |
+        npm install --global node-gyp
+        npm install --global lerna@^6.6.2
+
+    - name: Bootstrap (gaudi-iot-device)
+      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build (gaudi-iot-device)
+      run: lerna run build --scope @project-gaudi/gaudi-iot-device
+
+    - name: Publish to GitHub Packages (gaudi-iot-device)
+      run: npm publish ./device/core/
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-publish-gaudi-iot-amqp-base:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Grant execute permission to edit_packageJSON.sh
+      run: chmod +x ./scripts/edit_packageJSON.sh
+
+    - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
+      run: ./scripts/edit_packageJSON.sh
+      env: 
+        NAME: gaudi-iot-amqp-base
+        VERSION: ${{ github.event.release.tag_name }}
+        TARGET: ./common/transport/amqp/package.json
 
     - name: Set Node.js version
       uses: actions/setup-node@v4
@@ -44,16 +75,58 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
       
-    - name: Bootstrap (${{ matrix.buildTarget.name }})
-      run: lerna bootstrap --hoist --scope @project-gaudi/${{ matrix.buildTarget.name }}
+    - name: Bootstrap (gaudi-iot-amqp-base)
+      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Build (gaudi-iot-amqp-base)
+      run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
+
+    - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
+      run: npm publish ./common/transport/amqp/
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build (${{ matrix.buildTarget.name }})
-      run: 
-        lerna run build --scope @project-gaudi/${{ matrix.buildTarget.name }}
+  build-and-publish-gaudi-iot-device-amqp:
+    runs-on: ubuntu-22.04
+    needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base]
 
-    - name: Publish to GitHub Packages (${{ matrix.buildTarget.name }})
-      run: npm publish ${{ matrix.buildTarget.path }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Grant execute permission to edit_packageJSON.sh
+      run: chmod +x ./scripts/edit_packageJSON.sh
+
+    - name: Run edit_packageJSON.sh (gaudi-iot-device-amqp)
+      run: ./scripts/edit_packageJSON.sh
+      env: 
+        NAME: gaudi-iot-device-amqp
+        VERSION: ${{ github.event.release.tag_name }}
+        TARGET: ./device/transport/amqp/package.json
+
+    - name: Set Node.js version
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        registry-url: 'https://npm.pkg.github.com/'
+    
+    - name: Install Dependencies
+      run: |
+        npm install --global node-gyp
+        npm install --global lerna@^6.6.2
+      
+    - name: Bootstrap (gaudi-iot-device-amqp)
+      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build (gaudi-iot-device-amqp)
+      run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
+
+    - name: Publish to GitHub Packages (gaudi-iot-device-amqp)
+      run: npm publish ./device/transport/amqp/
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
