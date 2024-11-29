@@ -120,12 +120,7 @@ jobs:
       run: |
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
-
-    - name: Update dependencies
-      run: |
-        npm install @project-gaudi/gaudi-iot-device@0.0.1-temp @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp
-      working-directory: ./device/transport/amqp
-      
+    
     - name: Set up .npmrc
       run: cat .npmrc >> ./device/transport/amqp/.npmrc
 
@@ -142,3 +137,23 @@ jobs:
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
         gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
         gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
+    
+ cleanup:
+    runs-on: ubuntu-22.04
+    needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base, build-gaudi-iot-device-amqp]
+    if: ${{ always() }}
+
+    steps:
+    - name: Clean up (delete temporary packages)
+      run: |
+        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+        
+        # Check for gaudi-iot-device package
+        if gh package list --repo YOUR_GITHUB_USER/YOUR_REPO --package @project-gaudi/gaudi-iot-device --version "0.0.1-temp" | grep "0.0.1-temp"; then
+          gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
+        fi
+
+        # Check for gaudi-iot-amqp-base package
+        if gh package list --repo YOUR_GITHUB_USER/YOUR_REPO --package @project-gaudi/gaudi-iot-amqp-base --version "0.0.1-temp" | grep "0.0.1-temp"; then
+          gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
+        fi
