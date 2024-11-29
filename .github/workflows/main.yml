@@ -49,7 +49,7 @@ jobs:
     - name: Upload artifact (gaudi-iot-device)
       uses: actions/upload-artifact@v4
       with:
-        name: gaudi-iot-device
+        name: artifacts
         path: "*.tgz"
 
   build-and-publish-gaudi-iot-amqp-base:
@@ -94,7 +94,7 @@ jobs:
     - name: Upload artifact (gaudi-iot-amqp-base)
       uses: actions/upload-artifact@v4
       with:
-        name: gaudi-iot-amqp-base
+        name: artifacts
         path: "*.tgz"
 
   build-and-publish-gaudi-iot-device-amqp:
@@ -127,28 +127,16 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
 
-    - name: List downloaded artifacts (debugging step)
-      run: |
-          ls -alh ./artifacts/gaudi-iot-device
-          ls -alh ./artifacts/gaudi-iot-amqp-base
-
-    - name: Download artifact gaudi-iot-device
+    - name: Download ALL artifact
       uses: actions/download-artifact@v4
       with:
-        name: gaudi-iot-device
-        path: ./artifacts/gaudi-iot-device
-
-    - name: Download artifact gaudi-iot-amqp-base
-      uses: actions/download-artifact@v4
-      with:
-        name: gaudi-iot-amqp-base
-        path: ./artifacts/gaudi-iot-amqp-base
+        path: artifacts
+        pattern: "*.tgz"
+        merge-multiple: true
 
     - name: Install artifacts
       run: |
-        npm install ./artifacts/gaudi-iot-device/*.tgz
-        npm install ./artifacts/gaudi-iot-amqp-base/*.tgz
-      working-directory: ./device/transport/amqp
+        npm install ./artifacts/*.tgz
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
