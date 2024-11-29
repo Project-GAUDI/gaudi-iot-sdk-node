@@ -22,7 +22,7 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device
-        VERSION: ${{ github.sha }}-temp
+        VERSION: 0.0.1-temp
         TARGET: ./device/core/package.json
 
     - name: Set Node.js version
@@ -64,7 +64,7 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-amqp-base
-        VERSION: ${{ github.sha }}-temp
+        VERSION: 0.0.1-temp
         TARGET: ./common/transport/amqp/package.json
 
     - name: Set Node.js version
@@ -107,7 +107,7 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device-amqp
-        VERSION: ${{ github.sha }}
+        VERSION: 0.0.1-temp
         TARGET: ./device/transport/amqp/package.json
 
     - name: Set Node.js version
@@ -123,7 +123,7 @@ jobs:
 
     - name: Update dependencies
       run: |
-        npm install @project-gaudi/gaudi-iot-device@${{ github.sha }}-temp @project-gaudi/gaudi-iot-amqp-base@${{ github.sha }}-temp
+        npm install @project-gaudi/gaudi-iot-device@0.0.1-temp @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp
       working-directory: ./device/transport/amqp
       
     - name: Set up .npmrc
@@ -140,5 +140,5 @@ jobs:
     - name: Clean up (delete temporary packages)
       run: |
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-        gh package delete @project-gaudi/gaudi-iot-device@${{ github.sha }}-temp --owner YOUR_GITHUB_USER --yes
-        gh package delete @project-gaudi/gaudi-iot-amqp-base@${{ github.sha }}-temp --owner YOUR_GITHUB_USER --yes
+        gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
+        gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
