@@ -132,6 +132,9 @@ jobs:
       with:
         name: artifacts-gaudi-iot-device
 
+    - name: Display structure of downloaded files
+      run: ls -R
+
     - name: Download artifact gaudi-iot-amqp-base
       uses: actions/download-artifact@v4
       with:
