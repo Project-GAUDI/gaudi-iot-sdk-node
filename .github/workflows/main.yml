@@ -1,3 +1,11 @@
+name: Build Node.js Package
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
 jobs:
   build-and-publish-gaudi-iot-device:
     runs-on: ubuntu-22.04
