@@ -126,7 +126,12 @@ jobs:
       run: |
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
-      
+
+    - name: List downloaded artifacts (debugging step)
+      run: |
+          ls -alh ./artifacts/gaudi-iot-device
+          ls -alh ./artifacts/gaudi-iot-amqp-base
+
     - name: Download artifact gaudi-iot-device
       uses: actions/download-artifact@v4
       with:
