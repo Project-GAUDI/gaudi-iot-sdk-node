@@ -139,8 +139,8 @@ jobs:
 
     - name: Install artifacts
       run: |
-        npm install ./artifacts-gaudi-iot-device/*.tgz
-        npm install ./artifacts-gaudi-iot-amqp-base/*.tgz
+        npm install ./artifacts-gaudi-iot-device.tgz
+        npm install ./artifacts-gaudi-iot-amqp-base.tgz
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
