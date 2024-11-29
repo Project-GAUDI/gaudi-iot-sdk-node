@@ -138,7 +138,7 @@ jobs:
         gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
         gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
     
- cleanup:
+  cleanup:
     runs-on: ubuntu-22.04
     needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base, build-gaudi-iot-device-amqp]
     if: ${{ always() }}
