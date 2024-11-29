@@ -1,11 +1,3 @@
-name: Build Node.js Package
-
-on:
-  push:
-    branches:
-      - main
-      - develop
-
 jobs:
   build-and-publish-gaudi-iot-device:
     runs-on: ubuntu-22.04
@@ -22,7 +14,7 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device
-        VERSION: ${{ github.sha }}
+        VERSION: ${{ github.sha }}-temp
         TARGET: ./device/core/package.json
 
     - name: Set Node.js version
@@ -38,19 +30,16 @@ jobs:
 
     - name: Bootstrap (gaudi-iot-device)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Build (gaudi-iot-device)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device
 
-    - name: Pack artifact (gaudi-iot-device)
-      run: npm pack ./device/core
-      shell: bash
-
-    - name: Upload artifact (gaudi-iot-device)
-      uses: actions/upload-artifact@v4
-      with:
-        name: artifacts-gaudi-iot-device
-        path: ./*.tgz
+    - name: Publish to GitHub Packages (gaudi-iot-device)
+      run: npm publish ./device/core/
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-publish-gaudi-iot-amqp-base:
     runs-on: ubuntu-22.04
@@ -67,7 +56,7 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-amqp-base
-        VERSION: ${{ github.sha }}
+        VERSION: ${{ github.sha }}-temp
         TARGET: ./common/transport/amqp/package.json
 
     - name: Set Node.js version
@@ -83,21 +72,18 @@ jobs:
       
     - name: Bootstrap (gaudi-iot-amqp-base)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Build (gaudi-iot-amqp-base)
       run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
 
-    - name: Pack artifact (gaudi-iot-amqp-base)
-      run: npm pack ./common/transport/amqp
-      shell: bash
+    - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
+      run: npm publish ./common/transport/amqp/
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload artifact (gaudi-iot-amqp-base)
-      uses: actions/upload-artifact@v4
-      with:
-        name: artifacts-gaudi-iot-amqp-base
-        path: ./*.tgz
-
-  build-and-publish-gaudi-iot-device-amqp:
+  build-gaudi-iot-device-amqp:
     runs-on: ubuntu-22.04
     needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base]
 
@@ -127,23 +113,24 @@ jobs:
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
 
-    - name: Download artifact gaudi-iot-device
-      uses: actions/download-artifact@v4
-      with:
-        name: artifacts-gaudi-iot-device
-
-    - name: Download artifact gaudi-iot-amqp-base
-      uses: actions/download-artifact@v4
-      with:
-        name: artifacts-gaudi-iot-amqp-base
-
-    - name: Install artifacts
+    - name: Update dependencies
       run: |
-        npm install ./project-gaudi-gaudi-iot-device-*.tgz
-        npm install ./project-gaudi-gaudi-iot-device-*.tgz
+        npm install @project-gaudi/gaudi-iot-device@${{ github.sha }}-temp @project-gaudi/gaudi-iot-amqp-base@${{ github.sha }}-temp
+      working-directory: ./device/transport/amqp
+      
+    - name: Set up .npmrc
+      run: cat .npmrc >> ./device/transport/amqp/.npmrc
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build (gaudi-iot-device-amqp)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
+
+    - name: Clean up (delete temporary packages)
+      run: |
+        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+        gh package delete @project-gaudi/gaudi-iot-device@${{ github.sha }}-temp --owner YOUR_GITHUB_USER --yes
+        gh package delete @project-gaudi/gaudi-iot-amqp-base@${{ github.sha }}-temp --owner YOUR_GITHUB_USER --yes
