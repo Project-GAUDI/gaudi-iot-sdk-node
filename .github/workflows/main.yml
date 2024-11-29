@@ -131,13 +131,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: artifacts-gaudi-iot-device
-        path: ./*.tgz
 
     - name: Download artifact gaudi-iot-amqp-base
       uses: actions/download-artifact@v4
       with:
         name: artifacts-gaudi-iot-amqp-base
-        path: ./*.tgz
 
     - name: Install artifacts
       run: |
