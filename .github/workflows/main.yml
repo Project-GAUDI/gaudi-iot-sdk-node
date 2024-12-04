@@ -124,7 +124,7 @@ jobs:
     - name: Set up .npmrc
       run: |
           cat .npmrc >> ./device/transport/amqp/.npmrc
-          echo "@project-gaudi:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -134,12 +134,6 @@ jobs:
     - name: Build (gaudi-iot-device-amqp)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
 
-    - name: Clean up (delete temporary packages)
-      run: |
-        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-        gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
-        gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
-    
   cleanup:
     runs-on: ubuntu-22.04
     needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base, build-gaudi-iot-device-amqp]
