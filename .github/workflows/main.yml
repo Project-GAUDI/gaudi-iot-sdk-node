@@ -144,10 +144,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USER: YOUR_GITHUB_USER
+        versions: "0.0.1-temp"
       run: |
         # Define packages and versions
         packages=("gaudi-iot-device" "gaudi-iot-amqp-base")
-        versions="${{ github.sha.substring(0, 7) }}-temp"
 
         for package in "${packages[@]}"
         do
