@@ -124,7 +124,8 @@ jobs:
     - name: Set up .npmrc
       run: |
           cat .npmrc >> ./device/transport/amqp/.npmrc
-          echo //npm.pkg.github.com/:_authToken=\${{ secrets.GITHUB_PACKAGE_TOKEN }}>> .npmrc
+          echo //npm.pkg.github.com/:_authToken=\${{ secrets.GITHUB_PACKAGE_TOKEN }} >> .npmrc
+          cat ./device/transport/amqp/.npmrc
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
@@ -150,13 +151,13 @@ jobs:
         for package in "${packages[@]}"
         do
           echo "Checking for package ${package}@${versions}"
-          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/orgs/$ORG_NAME/packages/npm/$package/versions")
+          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${GITHUB_TOKEN}" \
+            "https://api.github.com/orgs/${ORG_NAME}/packages/npm/${package}/versions")
 
           if [ "$status" -eq 200 ]; then
             echo "Package ${package}@${versions} exists. Deleting..."
-            curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-              "https://api.github.com/orgs/$ORG_NAME/packages/npm/$package/versions/${versions}"
+            curl -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" \
+              "https://api.github.com/orgs/${ORG_NAME}/packages/npm/${package}/versions/${versions}"
           else
             echo "Package ${package}@${versions} does not exist."
           fi
