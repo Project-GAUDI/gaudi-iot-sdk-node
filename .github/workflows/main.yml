@@ -124,9 +124,7 @@ jobs:
     - name: Set up .npmrc
       run: |
           cat .npmrc >> ./device/transport/amqp/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo //npm.pkg.github.com/:_authToken=\${{ secrets.GITHUB_PACKAGE_TOKEN }}>> .npmrc
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
@@ -143,7 +141,7 @@ jobs:
     - name: Clean up (delete temporary packages)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_USER: YOUR_GITHUB_USER
+        ORG_NAME: $(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1)
         versions: "0.0.1-temp"
       run: |
         # Define packages and versions
@@ -153,12 +151,12 @@ jobs:
         do
           echo "Checking for package ${package}@${versions}"
           status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/orgs/$GITHUB_USER/packages/npm/$package/versions")
+            "https://api.github.com/orgs/$ORG_NAME/packages/npm/$package/versions")
 
           if [ "$status" -eq 200 ]; then
             echo "Package ${package}@${versions} exists. Deleting..."
             curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-              "https://api.github.com/orgs/$GITHUB_USER/packages/npm/$package/versions/${versions}"
+              "https://api.github.com/orgs/$ORG_NAME/packages/npm/$package/versions/${versions}"
           else
             echo "Package ${package}@${versions} does not exist."
           fi
