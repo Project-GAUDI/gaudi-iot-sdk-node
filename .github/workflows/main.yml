@@ -122,12 +122,14 @@ jobs:
         npm install --global lerna@^6.6.2
     
     - name: Set up .npmrc
-      run: cat .npmrc >> ./device/transport/amqp/.npmrc
+      run: |
+          cat .npmrc >> ./device/transport/amqp/.npmrc
+          echo "@project-gaudi:registry=https://npm.pkg.github.com/" > .npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build (gaudi-iot-device-amqp)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
@@ -145,15 +147,25 @@ jobs:
 
     steps:
     - name: Clean up (delete temporary packages)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USER: YOUR_GITHUB_USER
       run: |
-        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-        
-        # Check for gaudi-iot-device package
-        if gh package list --repo YOUR_GITHUB_USER/YOUR_REPO --package @project-gaudi/gaudi-iot-device --version "0.0.1-temp" | grep "0.0.1-temp"; then
-          gh package delete @project-gaudi/gaudi-iot-device@0.0.1-temp --owner YOUR_GITHUB_USER --yes
-        fi
+        # Define packages and versions
+        packages=("gaudi-iot-device" "gaudi-iot-amqp-base")
+        versions="${{ github.sha.substring(0, 7) }}-temp"
 
-        # Check for gaudi-iot-amqp-base package
-        if gh package list --repo YOUR_GITHUB_USER/YOUR_REPO --package @project-gaudi/gaudi-iot-amqp-base --version "0.0.1-temp" | grep "0.0.1-temp"; then
-          gh package delete @project-gaudi/gaudi-iot-amqp-base@0.0.1-temp --owner YOUR_GITHUB_USER --yes
-        fi
+        for package in "${packages[@]}"
+        do
+          echo "Checking for package ${package}@${versions}"
+          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/orgs/$GITHUB_USER/packages/npm/$package/versions")
+
+          if [ "$status" -eq 200 ]; then
+            echo "Package ${package}@${versions} exists. Deleting..."
+            curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/orgs/$GITHUB_USER/packages/npm/$package/versions/${versions}"
+          else
+            echo "Package ${package}@${versions} does not exist."
+          fi
+        done
