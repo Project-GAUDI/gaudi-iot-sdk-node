@@ -115,17 +115,13 @@ jobs:
       with:
         node-version: '18'
         registry-url: 'https://npm.pkg.github.com/'
+        scope: '@project-gaudi'
+        always-auth: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
-        npm install --global lerna@^6.6.2
-    
-    - name: Set up .npmrc
-      run: |
-          cat .npmrc >> ./device/transport/amqp/.npmrc
-          echo //npm.pkg.github.com/:_authToken=\${{ secrets.GITHUB_PACKAGE_TOKEN }} >> .npmrc
-          cat ./device/transport/amqp/.npmrc
+        npm install --global lern
 
     - name: Bootstrap (gaudi-iot-device-amqp)
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
