@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  build-and-publish-gaudi-iot-device:
+  build-and-publish:
     runs-on: ubuntu-22.04
 
     steps:
@@ -25,83 +25,12 @@ jobs:
         VERSION: 0.0.1-temp
         TARGET: ./device/core/package.json
 
-    - name: Set Node.js version
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        registry-url: 'https://npm.pkg.github.com/'
-    
-    - name: Install Dependencies
-      run: |
-        npm install --global node-gyp
-        npm install --global lerna@^6.6.2
-
-    - name: Bootstrap (gaudi-iot-device)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Build (gaudi-iot-device)
-      run: lerna run build --scope @project-gaudi/gaudi-iot-device
-
-    - name: Publish to GitHub Packages (gaudi-iot-device)
-      run: npm publish ./device/core/
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-and-publish-gaudi-iot-amqp-base:
-    runs-on: ubuntu-22.04
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Grant execute permission to edit_packageJSON.sh
-      run: chmod +x ./scripts/edit_packageJSON.sh
-
-    - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
+  - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-amqp-base
         VERSION: 0.0.1-temp
         TARGET: ./common/transport/amqp/package.json
-
-    - name: Set Node.js version
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        registry-url: 'https://npm.pkg.github.com/'
-    
-    - name: Install Dependencies
-      run: |
-        npm install --global node-gyp
-        npm install --global lerna@^6.6.2
-      
-    - name: Bootstrap (gaudi-iot-amqp-base)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-    - name: Build (gaudi-iot-amqp-base)
-      run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
-
-    - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
-      run: npm publish ./common/transport/amqp/
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-gaudi-iot-device-amqp:
-    runs-on: ubuntu-22.04
-    needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base]
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Grant execute permission to edit_packageJSON.sh
-      run: chmod +x ./scripts/edit_packageJSON.sh
 
     - name: Run edit_packageJSON.sh (gaudi-iot-device-amqp)
       run: ./scripts/edit_packageJSON.sh
@@ -121,40 +50,107 @@ jobs:
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
-        npm install --global lerna@^6.6.2
+    #     npm install --global lerna
 
-    - name: Bootstrap (gaudi-iot-device-amqp)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
+    # - name: Bootstrap (gaudi-iot-device)
+    #   run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build
+      run: lerna run build --scope @project-gaudi/gaudi-iot-device @project-gaudi/gaudi-iot-amqp-base @project-gaudi/gaudi-iot-device-amqp
 
-    - name: Build (gaudi-iot-device-amqp)
-      run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
-
-  cleanup:
-    runs-on: ubuntu-22.04
-    needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base, build-gaudi-iot-device-amqp]
-    if: ${{ always() }}
-
-    steps:
-    - name: Clean up (delete temporary packages)
+    - name: Publish to GitHub Packages (gaudi-iot-device)
+      run: npm publish ./device/core/
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ORG_NAME: $(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1)
-        versions: "0.0.1-temp"
-      run: |
-        # Define packages and versions
-        packages=("gaudi-iot-device" "gaudi-iot-amqp-base")
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        for package in "${packages[@]}"
-        do
-          echo "Checking for package ${package}@${versions}"
-          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${GITHUB_TOKEN}" \
-            "https://api.github.com/orgs/${ORG_NAME}/packages/npm/${package}/versions")
+    - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
+      run: npm publish ./common/transport/amqp/
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Publish to GitHub Packages (gaudi-iot-device-amqp)
+      run: npm publish ./device/transport/amqp/package.json
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          if [ "$status" -eq 200 ]; then
-            echo "Package ${package}@${versions} exists. Deleting..."
-            curl -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/orgs/${ORG_NAME}/packages/npm/${package}/versions/${versions}"
-          else
-            echo "Package ${package}@${versions} does not exist."
-          fi
-        done
+  # build-and-publish-gaudi-iot-amqp-base:
+  #   runs-on: ubuntu-22.04
+
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       fetch-depth: 0
+
+  #   - name: Grant execute permission to edit_packageJSON.sh
+  #     run: chmod +x ./scripts/edit_packageJSON.sh
+
+  #   - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
+  #     run: ./scripts/edit_packageJSON.sh
+  #     env: 
+  #       NAME: gaudi-iot-amqp-base
+  #       VERSION: 0.0.1-temp
+  #       TARGET: ./common/transport/amqp/package.json
+
+  #   - name: Set Node.js version
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '18'
+  #       registry-url: 'https://npm.pkg.github.com/'
+    
+  #   - name: Install Dependencies
+  #     run: |
+  #       npm install --global node-gyp
+  #       npm install --global lerna@^6.6.2
+      
+  #   - name: Bootstrap (gaudi-iot-amqp-base)
+  #     run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
+  #     env:
+  #       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+  #   - name: Build (gaudi-iot-amqp-base)
+  #     run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
+
+  #   - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
+  #     run: npm publish ./common/transport/amqp/
+  #     env:
+  #       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # build-gaudi-iot-device-amqp:
+  #   runs-on: ubuntu-22.04
+  #   needs: [build-and-publish-gaudi-iot-device, build-and-publish-gaudi-iot-amqp-base]
+
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       fetch-depth: 0
+
+  #   - name: Grant execute permission to edit_packageJSON.sh
+  #     run: chmod +x ./scripts/edit_packageJSON.sh
+
+  #   - name: Run edit_packageJSON.sh (gaudi-iot-device-amqp)
+  #     run: ./scripts/edit_packageJSON.sh
+  #     env: 
+  #       NAME: gaudi-iot-device-amqp
+  #       VERSION: 0.0.1-temp
+  #       TARGET: ./device/transport/amqp/package.json
+
+  #   - name: Set Node.js version
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '18'
+  #       registry-url: 'https://npm.pkg.github.com/'
+  #       scope: '@project-gaudi'
+  #       always-auth: ${{ secrets.GITHUB_TOKEN }}
+    
+  #   - name: Install Dependencies
+  #     run: |
+  #       npm install --global node-gyp
+  #       npm install --global lerna@^6.6.2
+
+  #   - name: Bootstrap (gaudi-iot-device-amqp)
+  #     run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
+
+  #   - name: Build (gaudi-iot-device-amqp)
+  #     run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
