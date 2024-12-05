@@ -50,17 +50,17 @@ jobs:
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
-    #     npm install --global lerna
+        npm install
 
     # - name: Bootstrap (gaudi-iot-device)
     #   run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
     #   env:
     #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Build (gaudi-iot-amqp-base)
+    - name: Build (gaudi-iot-device)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device
-      
-    - name: Build (gaudi-iot-device-amqp)
+
+    - name: Build (gaudi-iot-amqp-base)
       run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
 
     - name: Build (gaudi-iot-device-amqp)
