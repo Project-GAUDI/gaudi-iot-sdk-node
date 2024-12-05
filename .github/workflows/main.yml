@@ -26,11 +26,11 @@ jobs:
         TARGET: ./device/core/package.json
 
     - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
-        run: ./scripts/edit_packageJSON.sh
-        env: 
-          NAME: gaudi-iot-amqp-base
-          VERSION: 0.0.1-temp
-          TARGET: ./common/transport/amqp/package.json
+      run: ./scripts/edit_packageJSON.sh
+      env: 
+        NAME: gaudi-iot-amqp-base
+        VERSION: 0.0.1-temp
+        TARGET: ./common/transport/amqp/package.json
 
     - name: Run edit_packageJSON.sh (gaudi-iot-device-amqp)
       run: ./scripts/edit_packageJSON.sh
