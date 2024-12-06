@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
-    "target":"es2018",
+    "target": "ES2018",
     "module": "commonjs",
     "sourceMap": true,
     "declaration": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "removeComments": false
-  }
+    "removeComments": false,
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "test"]
 }
