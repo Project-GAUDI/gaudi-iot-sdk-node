@@ -50,40 +50,30 @@ jobs:
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
-        npm install --global lerna@^6.6.2
+        npm install
 
-    - name: Bootstrap (gaudi-iot-device)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
+    # - name: Bootstrap (gaudi-iot-device)
+    #   run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
       
-    - name: Bootstrap (gaudi-iot-amqp-base)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
+    # - name: Bootstrap (gaudi-iot-amqp-base)
+    #   run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
 
-    - name: Bootstrap (gaudi-iot-device-amqp)
-      run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
-      
     - name: Build (gaudi-iot-device)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device
 
     - name: Build (gaudi-iot-amqp-base)
       run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
 
+    # - name: Bootstrap (gaudi-iot-device-amqp)
+    #   run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp
+
     - name: Build (gaudi-iot-device-amqp)
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
-
-    - name: Publish to GitHub Packages (gaudi-iot-device)
-      run: npm publish ./device/core/
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Publish to GitHub Packages (gaudi-iot-amqp-base)
-      run: npm publish ./common/transport/amqp/
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-    - name: Publish to GitHub Packages (gaudi-iot-device-amqp)
-      run: npm publish ./device/transport/amqp/package.json
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Publish to GitHub Packages (gaudi-iot-device-amqp)
+    #   run: npm publish ./device/transport/amqp/package.json
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # build-and-publish-gaudi-iot-amqp-base:
   #   runs-on: ubuntu-22.04
