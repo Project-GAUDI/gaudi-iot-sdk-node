@@ -1,6 +1,5 @@
 {
   "npmCliant": "npm",
-  "useWorkspaces": true,
   "packages": [
     "build/tools",
     "common/core",
