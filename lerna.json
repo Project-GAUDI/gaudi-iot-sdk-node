@@ -1,5 +1,5 @@
 {
-  "npmCliant": "npm",
+  "lerna": "3.20.2",
   "packages": [
     "build/tools",
     "common/core",
@@ -23,6 +23,6 @@
     "ts-e2e",
     "stresstests"
   ],
-  "version": "independent",
+  "version": "0.0.0",
   "maxBuffer": 1048576
 }
