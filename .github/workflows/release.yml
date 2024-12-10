@@ -47,8 +47,10 @@ jobs:
 
     - name: Authenticate to GitHub Packages
       run: ｜
-        echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PAT }}" > ~/.npmrc
+        echo "//npm.pkg.github.com/" > ~/.npmrc
+        echo "@project-gaudi:registry=https://npm.pkg.github.com" >> ~/.npmrc
         echo "//registry.npmjs.org/" >> ~/.npmrc
+        echo "https://registry.npmjs.org/" >> ~/.npmrc
 
     - name: Install Dependencies
       run: |
@@ -75,9 +77,15 @@ jobs:
 
     - name: Publish gaudi-iot-device to GitHub Packages
       run: npm publish ./device/core/
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Publish gaudi-iot-amqp-base to GitHub Packages
       run: npm publish ./common/transport/amqp/
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Publish gaudi-iot-device-amqp to GitHub Packages
       run: npm publish ./device/transport/amqp/
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
