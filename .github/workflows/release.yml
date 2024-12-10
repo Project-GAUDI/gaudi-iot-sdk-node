@@ -72,10 +72,10 @@ jobs:
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
 
     - name: Publish gaudi-iot-device to GitHub Packages
-      run: npm publish ./device/core/package.json
+      run: npm publish ./device/core/
       
     - name: Publish gaudi-iot-amqp-base to GitHub Packages
-      run: npm publish ./common/transport/amqp/package.json
+      run: npm publish ./common/transport/amqp/
       
     - name: Publish gaudi-iot-device-amqp to GitHub Packages
-      run: npm publish ./device/transport/amqp/package.json
+      run: npm publish ./device/transport/amqp/
