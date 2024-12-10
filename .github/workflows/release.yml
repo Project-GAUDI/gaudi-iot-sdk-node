@@ -40,13 +40,13 @@ jobs:
     - name: Edit source for gaudi-iot-device-amqp
       run: ./scripts/edit_gaudi-iot-device-amqp_src.sh
 
+    - name: Authenticate to GitHub Packages
+      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+
     - name: Set Node.js version
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        registry-url: 'https://npm.pkg.github.com/'
-        scope: '@project-gaudi'
-        always-auth: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Dependencies
       run: |
