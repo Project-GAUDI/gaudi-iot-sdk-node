@@ -46,7 +46,7 @@ jobs:
         node-version: '18'
 
     - name: Authenticate to GitHub Packages
-      run: ｜
+      run: |
         echo "//npm.pkg.github.com/" > ~/.npmrc
         echo "@project-gaudi:registry=https://npm.pkg.github.com" >> ~/.npmrc
         echo "//registry.npmjs.org/" >> ~/.npmrc
