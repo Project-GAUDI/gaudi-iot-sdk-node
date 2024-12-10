@@ -1,11 +1,13 @@
-name: Publish Node.js Package
+name: Build Node.js Package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-22.04
 
     steps:
@@ -20,42 +22,37 @@ jobs:
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device
-        VERSION: ${{ github.event.release.tag_name }}
+        VERSION: 0.0.1-temp
         TARGET: ./device/core/package.json
 
     - name: Edit package.json for gaudi-iot-amqp-base
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-amqp-base
-        VERSION: ${{ github.event.release.tag_name }}
+        VERSION: 0.0.1-temp
         TARGET: ./common/transport/amqp/package.json
 
     - name: Edit package.json for gaudi-iot-device-amqp
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device-amqp
-        VERSION: ${{ github.event.release.tag_name }}
+        VERSION: 0.0.1-temp
         TARGET: ./device/transport/amqp/package.json
     
     - name: Edit source for gaudi-iot-device-amqp
       run: ./scripts/edit_gaudi-iot-device-amqp_src.sh
-  
-    - name: Set Node.js version
+
+    - name: Setup Node.js environment
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         registry-url: 'https://npm.pkg.github.com/'
 
-    - name: Authenticate to GitHub Packages
-      run: |
-        echo "//npm.pkg.github.com/" > ~/.npmrc
-        echo "@project-gaudi:registry=https://npm.pkg.github.com" >> ~/.npmrc
-
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
-  
+
     - name: Bootstrap gaudi-iot-device
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
 
@@ -73,18 +70,3 @@ jobs:
 
     - name: Build gaudi-iot-device-amqp
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
-
-    - name: Publish gaudi-iot-device to GitHub Packages
-      run: npm publish ./device/core/
-      env: 
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-    - name: Publish gaudi-iot-amqp-base to GitHub Packages
-      run: npm publish ./common/transport/amqp/
-      env: 
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-    - name: Publish gaudi-iot-device-amqp to GitHub Packages
-      run: npm publish ./device/transport/amqp/
-      env: 
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

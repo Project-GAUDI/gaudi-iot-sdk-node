@@ -12,8 +12,8 @@ const debug = dbg('azure-iot-device-amqp:AmqpDeviceMethodClient');
 const debugErrors = dbg('azure-iot-device-amqp:AmqpDeviceMethodClient:Errors');
 
 import { Message, errors, endpoint, AuthenticationProvider } from 'azure-iot-common';
-import { MethodMessage, DeviceMethodResponse } from 'azure-iot-device';
-import { Amqp as BaseAmqpClient, SenderLink, ReceiverLink, getErrorName } from 'azure-iot-amqp-base';
+import { MethodMessage, DeviceMethodResponse } from 'gaudi-iot-device';
+import { Amqp as BaseAmqpClient, SenderLink, ReceiverLink, getErrorName } from 'gaudi-iot-amqp-base';
 import rhea = require('rhea');
 
 const methodMessagePropertyKeys = {
