@@ -18,57 +18,55 @@ jobs:
     - name: Grant execute permission to edit_packageJSON.sh
       run: chmod +x ./scripts/edit_packageJSON.sh
 
-    - name: Run edit_packageJSON.sh (gaudi-iot-device)
+    - name: Edit package.json for gaudi-iot-device
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device
         VERSION: 0.0.1-temp
         TARGET: ./device/core/package.json
 
-    - name: Run edit_packageJSON.sh (gaudi-iot-amqp-base)
+    - name: Edit package.json for gaudi-iot-amqp-base
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-amqp-base
         VERSION: 0.0.1-temp
         TARGET: ./common/transport/amqp/package.json
 
-    - name: Run edit_packageJSON.sh (gaudi-iot-device-amqp)
+    - name: Edit package.json for gaudi-iot-device-amqp
       run: ./scripts/edit_packageJSON.sh
       env: 
         NAME: gaudi-iot-device-amqp
         VERSION: 0.0.1-temp
         TARGET: ./device/transport/amqp/package.json
     
-    - name: Run edit_gaudi-iot-device-amqp_src.sh
+    - name: Edit source for gaudi-iot-device-amqp
       run: ./scripts/edit_gaudi-iot-device-amqp_src.sh
 
-    - name: Set Node.js version
+    - name: Setup Node.js environment
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         registry-url: 'https://npm.pkg.github.com/'
-        scope: '@project-gaudi'
-        always-auth: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Dependencies
       run: |
         npm install --global node-gyp
         npm install --global lerna@^6.6.2
 
-    - name: Bootstrap (gaudi-iot-device)
+    - name: Bootstrap gaudi-iot-device
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device
-      
-    - name: Build (gaudi-iot-device)
+
+    - name: Build gaudi-iot-device
       run: lerna run build --scope @project-gaudi/gaudi-iot-device
 
-    - name: Bootstrap (gaudi-iot-amqp-base)
+    - name: Bootstrap gaudi-iot-amqp-base
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-amqp-base
 
-    - name: Build (gaudi-iot-amqp-base)
+    - name: Build gaudi-iot-amqp-base
       run: lerna run build --scope @project-gaudi/gaudi-iot-amqp-base
 
-    - name: Bootstrap (gaudi-iot-device-amqp)
+    - name: Bootstrap gaudi-iot-device-amqp
       run: lerna bootstrap --hoist --scope @project-gaudi/gaudi-iot-device-amqp --include-dependencies
 
-    - name: Build (gaudi-iot-device-amqp)
+    - name: Build gaudi-iot-device-amqp
       run: lerna run build --scope @project-gaudi/gaudi-iot-device-amqp
