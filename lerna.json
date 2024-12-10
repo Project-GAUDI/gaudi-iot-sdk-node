@@ -2,7 +2,6 @@
   "lerna": "3.20.2",
   "packages": [
     "build/tools",
-    "common/core",
     "common/transport/*",
     "device/core",
     "device/samples",
