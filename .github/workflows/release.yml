@@ -44,13 +44,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        registry-url: 'https://npm.pkg.github.com/'
 
     - name: Authenticate to GitHub Packages
       run: |
         echo "//npm.pkg.github.com/" > ~/.npmrc
         echo "@project-gaudi:registry=https://npm.pkg.github.com" >> ~/.npmrc
-        echo "//registry.npmjs.org/" >> ~/.npmrc
-        echo "https://registry.npmjs.org/" >> ~/.npmrc
 
     - name: Install Dependencies
       run: |
