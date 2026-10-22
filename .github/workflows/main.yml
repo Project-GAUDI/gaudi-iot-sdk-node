@@ -8,10 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
@@ -19,21 +19,21 @@ jobs:
       run: chmod +x ./scripts/edit_packageJSON.sh
 
     - name: Edit package.json for gaudi-iot-device
-      run: ./scripts/edit_packageJSON.sh
+      run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
         NAME: gaudi-iot-device
         VERSION: 0.0.1-temp
         TARGET: ./device/core/package.json
 
     - name: Edit package.json for gaudi-iot-amqp-base
-      run: ./scripts/edit_packageJSON.sh
+      run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
         NAME: gaudi-iot-amqp-base
         VERSION: 0.0.1-temp
         TARGET: ./common/transport/amqp/package.json
 
     - name: Edit package.json for gaudi-iot-device-amqp
-      run: ./scripts/edit_packageJSON.sh
+      run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
         NAME: gaudi-iot-device-amqp
         VERSION: 0.0.1-temp
@@ -43,9 +43,9 @@ jobs:
       run: ./scripts/edit_gaudi-iot-device-amqp_src.sh
 
     - name: Setup Node.js environment
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
-        node-version: '18'
+        node-version: '24'
         registry-url: 'https://npm.pkg.github.com/'
 
     - name: Install Dependencies

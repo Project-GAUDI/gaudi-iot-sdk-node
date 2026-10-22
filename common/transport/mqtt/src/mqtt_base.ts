@@ -16,7 +16,7 @@ class OnTheWireMessage {
   enqueuedTimeSecondsSinceEpoch: number;
   callback: (err?: Error, result?: any) => void;
   constructor(callback: (err?: Error, result?: any) => void) {
-    this.enqueuedTimeSecondsSinceEpoch = Math.floor( Date.now() / 1000 );
+    this.enqueuedTimeSecondsSinceEpoch = Math.floor(Date.now() / 1000);
     this.callback = callback;
   }
 }
@@ -279,8 +279,11 @@ export class MqttBase extends EventEmitter {
               this._fsm.handle('forceDisconnect', callback);
             }, 30000);
 
+            // When experiencing message loss due to high throughput, the force flag in
+            // disconnectClient can be set to true to cause messages to be properly dropped,
+            // and thus re-sent. Making this the default is under investigation.
             debug('disconnecting mqtt client');
-            this._disconnectClient(false, () => {
+            this._disconnectClient(this._options?.mqtt?.forceDisconnect ?? false, () => {
               clearTimeout(disconnectTimeout);
               if (!switched) {
                 debug('mqtt client disconnected - reconnecting');
@@ -467,6 +470,7 @@ export class MqttBase extends EventEmitter {
   }
 
   private _disconnectClient(forceDisconnect: boolean, callback: () => void): void {
+    debug('forceDisconnect is valued at: ' + forceDisconnect);
     if (this._mqttClient) {
       debug('removing all listeners');
       this._mqttTrackedListeners.removeAllTrackedListeners();
@@ -514,9 +518,9 @@ export class MqttBase extends EventEmitter {
   }
 }
 
-  /**
-   * @private
-   */
+/**
+ * @private
+ */
 export interface MqttBaseTransportConfig {
   sharedAccessSignature?: string | SharedAccessSignature;
   clientId: string;
