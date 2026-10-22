@@ -36,9 +36,6 @@ jobs:
         NAME: gaudi-iot-device-amqp
         VERSION: ${{ github.event.release.tag_name }}
         TARGET: ./device/transport/amqp/package.json
-    
-    - name: Edit source for gaudi-iot-device-amqp
-      run: ./scripts/edit_gaudi-iot-device-amqp_src.sh
   
     - name: Set Node.js version
       uses: actions/setup-node@v7
