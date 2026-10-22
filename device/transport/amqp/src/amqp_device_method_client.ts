@@ -4,7 +4,7 @@
 'use strict';
 
 import { EventEmitter } from 'events';
-import * as uuid from 'uuid';
+import { randomUUID } from 'node:crypto';
 import * as machina  from 'machina';
 import * as async from 'async';
 import * as dbg from 'debug';
@@ -12,8 +12,8 @@ const debug = dbg('azure-iot-device-amqp:AmqpDeviceMethodClient');
 const debugErrors = dbg('azure-iot-device-amqp:AmqpDeviceMethodClient:Errors');
 
 import { Message, errors, endpoint, AuthenticationProvider } from 'azure-iot-common';
-import { MethodMessage, DeviceMethodResponse } from 'gaudi-iot-device';
-import { Amqp as BaseAmqpClient, SenderLink, ReceiverLink, getErrorName } from 'gaudi-iot-amqp-base';
+import { MethodMessage, DeviceMethodResponse } from '@project-gaudi/gaudi-iot-device';
+import { Amqp as BaseAmqpClient, SenderLink, ReceiverLink, getErrorName } from '@project-gaudi/gaudi-iot-amqp-base';
 import rhea = require('rhea');
 
 const methodMessagePropertyKeys = {
@@ -102,7 +102,7 @@ export class AmqpDeviceMethodClient extends EventEmitter {
                 const linkOptions: LinkOption = {
                   properties: {
                     'com.microsoft:api-version': endpoint.apiVersion,
-                    'com.microsoft:channel-correlation-id': 'methods:' + uuid.v4()
+                    'com.microsoft:channel-correlation-id': 'methods:' + randomUUID()
                   },
                   rcv_settle_mode: 0
                 };

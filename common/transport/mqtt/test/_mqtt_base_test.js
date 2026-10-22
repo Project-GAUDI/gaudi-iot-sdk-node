@@ -426,6 +426,7 @@ describe('MqttBase', function () {
 
   describe('#timeout', function () {
     const defaultTimeOutInSeconds = 30;
+
     it('completes message with a timeout at around default timeout number of seconds', function (done) {
       const clock = sinon.useFakeTimers();
       const fakemqtt = new ErrorFakeMqtt();
@@ -677,6 +678,41 @@ describe('MqttBase', function () {
         callback();
       });
       const transport = new MqttBase(fakeMqtt);
+      transport.connect(fakeConfig, function () {
+        assert.isTrue(fakeMqtt.connect.calledOnce);
+        assert.strictEqual(fakeMqtt.connect.firstCall.args[1].password, fakeConfig.sharedAccessSignature);
+        transport.updateSharedAccessSignature(newSas, function (err) {
+          assert.notExists(err);
+          assert.isTrue(fakeMqtt.end.calledTwice);
+          assert.isTrue(fakeMqtt.connect.calledTwice);
+          assert.strictEqual(fakeMqtt.connect.secondCall.args[1].password, newSas);
+          clock.restore();
+          testCallback();
+        });
+        fakeMqtt.emit('connect');
+      });
+
+      fakeMqtt.emit('connect');
+    });
+
+    it('force disconnects the client on disconnect using forceDisconnect option', function (testCallback) {
+      let clock = sinon.useFakeTimers();
+      const newSas = 'newsas';
+      const fakeMqtt = new FakeMqtt();
+      fakeMqtt.end = sinon.stub();
+      fakeMqtt.end.onFirstCall().callsFake((force, callback) => {
+        assert.isTrue(force); // Verification for forceDisconnect
+        clock.tick(30000);
+        callback();
+      });
+
+      fakeMqtt.end.onSecondCall().callsFake((force, callback) => {
+        /*Tests_SRS_NODE_COMMON_MQTT_BASE_41_002: [The `updateSharedAccessSignature` method shall trigger a forced disconnect if after 30 seconds the mqtt client has failed to complete a non-forced disconnect.]*/
+        assert.isTrue(force);
+        callback();
+      });
+      const transport = new MqttBase(fakeMqtt);
+      transport.setOptions({ mqtt: { forceDisconnect: true } });
       transport.connect(fakeConfig, function () {
         assert.isTrue(fakeMqtt.connect.calledOnce);
         assert.strictEqual(fakeMqtt.connect.firstCall.args[1].password, fakeConfig.sharedAccessSignature);

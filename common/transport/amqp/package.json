@@ -1,6 +1,6 @@
 {
   "name": "azure-iot-amqp-base",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "AMQP operations used by Azure IoT device and service SDKs",
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -8,18 +8,14 @@
   "typings": "index.d.ts",
   "dependencies": {
     "async": "^3.2.3",
-    "es5-ext": "0.10.53",
-    "azure-iot-common": "1.13.2",
+    "azure-iot-common": "1.13.3",
     "debug": "^4.3.1",
-    "lodash.merge": "^4.6.1",
     "machina": "^4.0.2",
-    "rhea": "^3.0.1",
-    "uuid": "^8.3.2",
+    "rhea": "^1.0.15",
     "ws": "^6.0.0"
   },
   "devDependencies": {
     "@types/async": "^3.2.8",
-    "@types/node": "^16.10.2",
     "eslint": "^8.26.0",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.41.0",
@@ -35,8 +31,7 @@
     "nyc": "^15.0.0",
     "sinon": "^11.1.2",
     "sinon-test": "3.1.4",
-    "source-map-support": "^0.5.16",
-    "typescript": "4.9.5"
+    "source-map-support": "^0.5.16"
   },
   "scripts": {
     "srclint": "eslint src --ext .ts -f visualstudio",
