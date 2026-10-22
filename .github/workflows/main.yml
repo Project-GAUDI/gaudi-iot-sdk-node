@@ -1,6 +1,7 @@
 name: Build Node.js Package
 
 on:
+  pull_request:
   push:
     branches:
       - main
