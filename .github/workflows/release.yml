@@ -19,21 +19,21 @@ jobs:
     - name: Edit package.json for gaudi-iot-device
       run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
-        NAME: '@project-gaudi/gaudi-iot-device'
+        NAME: gaudi-iot-device
         VERSION: ${{ github.event.release.tag_name }}
         TARGET: ./device/core/package.json
 
     - name: Edit package.json for gaudi-iot-amqp-base
       run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
-        NAME: '@project-gaudi/gaudi-iot-amqp-base'
+        NAME: gaudi-iot-amqp-base
         VERSION: ${{ github.event.release.tag_name }}
         TARGET: ./common/transport/amqp/package.json
 
     - name: Edit package.json for gaudi-iot-device-amqp
       run: ./scripts/edit_packageJSON.sh "$VERSION" "$NAME" "$TARGET"
       env: 
-        NAME: '@project-gaudi/gaudi-iot-device-amqp'
+        NAME: gaudi-iot-device-amqp
         VERSION: ${{ github.event.release.tag_name }}
         TARGET: ./device/transport/amqp/package.json
   
